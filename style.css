@@ -1,0 +1,134 @@
+:root {
+  --bg: #080808;
+  --text: #f5f5f0;
+  --muted: #9a9a94;
+  --lime: #d4ff32;
+  --line: #1c1c18;
+  --player-h: 190px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "JetBrains Mono", "Space Mono", monospace;
+  line-height: 1.6;
+  padding-bottom: var(--player-h);
+}
+
+.hero {
+  padding: 3rem 1.25rem 1rem;
+  border-bottom: 2px solid var(--line);
+}
+
+.hero-kicker {
+  color: var(--lime);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin: 0 0 0.5rem;
+}
+
+.hero h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  line-height: 1.1;
+}
+
+.hero-sub { color: var(--muted); margin: 0; }
+
+main { padding: 1.25rem; max-width: 720px; }
+
+.section-title {
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  color: var(--lime);
+  margin: 0 0 1rem;
+}
+
+.status { color: var(--muted); }
+
+.tape-list { list-style: none; margin: 0; padding: 0; }
+
+/* Alasan: satu kartu per tape dengan border kiri tebal lime = motif identitas ROOM90 */
+.tape-card {
+  width: 100%;
+  display: block;
+  text-align: left;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--lime);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font: inherit;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.tape-card:hover { background: #101010; }
+
+/* Alasan: focus lime tebal = satu-satunya penanda keyboard, tanpa glow */
+.tape-card:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: 2px;
+}
+
+.tape-title { display: block; font-weight: 700; font-size: 1.05rem; }
+.tape-meta { display: block; color: var(--muted); font-size: 0.85rem; margin-top: 0.25rem; }
+
+.player {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #0a0a0a;
+  border-top: 2px solid var(--lime);
+  padding: 0.75rem 1.25rem calc(0.75rem + env(safe-area-inset-bottom));
+}
+
+.player-meta { margin-bottom: 0.5rem; }
+
+.np-title { margin: 0; font-weight: 700; }
+.np-sub { margin: 0; color: var(--muted); font-size: 0.8rem; }
+
+/* Alasan: waveform jadi focal point player, warna lime di latar gelap = identitas tape deck */
+.waveform {
+  min-height: 64px;
+  background: #000;
+  cursor: pointer;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.controls button {
+  font: inherit;
+  background: var(--lime);
+  color: #080808;
+  border: 0;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.vol { display: flex; align-items: center; gap: 0.5rem; color: var(--muted); font-size: 0.8rem; }
+.vol input { accent-color: var(--lime); width: 120px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none; }
+}
+
+@media (min-width: 600px) {
+  .hero { padding-left: 2rem; }
+  main { padding: 2rem; }
+}

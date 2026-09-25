@@ -1,0 +1,17 @@
+[
+  {
+    "id": "room90-01",
+    "title": "Insomnia Vol.1",
+    "artist": "Moxxsa",
+    "date": "2022-09-16",
+    "genre": "Future House",
+    "durationSec": 2188,
+    "durationText": "36:27",
+    "audioUrl": "https://files.catbox.moe/8o1jb0.mp3",
+    "peaksUrl": "peaks/insomnia-vol1.json",
+    "bpm": null,
+    "coverColor": "#d4ff32",
+    "tracklist": [],
+    "notes": ""
+  }
+]

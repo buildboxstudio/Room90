@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ROOM90 // Private Tape Archive / Moxxsa</title>
+<meta name="description" content="Private tape archive by Moxxsa. Bedroom tapes since the 90s.">
+<link rel="preconnect" href="https://files.catbox.moe">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{"imports":{"wavesurfer.js":"https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js"}}
+</script>
+</head>
+<body>
+<header class="hero">
+  <p class="hero-kicker">ROOM90 //</p>
+  <h1>Private Tape Archive</h1>
+  <p class="hero-sub">Bedroom tapes since the 90s. By <strong>Moxxsa</strong>.</p>
+</header>
+
+<main>
+  <section aria-label="Daftar tape">
+    <h2 class="section-title">Tapes</h2>
+    <p id="status" class="status" role="status">Loading tapes...</p>
+    <ol id="tape-list" class="tape-list"></ol>
+  </section>
+</main>
+
+<footer id="player" class="player" hidden>
+  <div class="player-meta">
+    <p id="np-title" class="np-title">Pilih tape dulu</p>
+    <p class="np-sub"><span id="np-genre">-</span> · <span id="np-time">00:00 / 00:00</span></p>
+  </div>
+  <div id="waveform" class="waveform" role="slider" aria-label="Seek" tabindex="0"></div>
+  <div class="controls">
+    <button id="btn-play" type="button" aria-label="Play atau pause">▶</button>
+    <label class="vol">Vol
+      <input id="vol" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volume">
+    </label>
+    <button id="btn-retry" type="button" hidden>Coba lagi</button>
+  </div>
+</footer>
+
+<noscript><p class="status">Player butuh JavaScript. Aktifkan dulu.</p></noscript>
+<script type="module" src="app.js"></script>
+</body>
+</html>

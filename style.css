@@ -107,6 +107,20 @@ input:focus-visible {
 
 .tape-title { display: block; font-weight: 700; font-size: 1.05rem; }
 .tape-meta { display: block; color: var(--muted); font-size: 0.85rem; margin-top: 0.25rem; }
+.tape-likes { color: var(--lime); }
+
+/* Alasan: like = aksi sekunder, warna outline bukan solid, biar tidak menyaingi play */
+.like {
+  background: transparent !important;
+  color: var(--muted);
+  border: 1px solid var(--line) !important;
+  font-size: 1.1rem;
+}
+
+.like[aria-pressed="true"] {
+  color: #ff4d00;
+  border-color: #ff4d00 !important;
+}
 
 .player {
   position: fixed;
@@ -142,6 +156,28 @@ input:focus-visible {
   min-height: 64px;
   background: #000;
   cursor: pointer;
+}
+
+/* Alasan: equalizer = satu-satunya elemen yang bergerak, memberi sinyal "sedang diputar" */
+.eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 36px;
+  margin-bottom: 0.5rem;
+}
+
+.eq-bar {
+  flex: 1;
+  height: 100%;
+  background: var(--lime);
+  transform: scaleY(0.06);
+  transform-origin: bottom;
+  transition: transform 90ms linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eq { display: none; }
 }
 
 .controls {

@@ -16,15 +16,100 @@ const npImage = document.getElementById("np-image");
 const btnAbout = document.getElementById("btn-about");
 const aboutModal = document.getElementById("about-modal");
 const btnAboutClose = document.getElementById("btn-about-close");
+const eqBox = document.getElementById("eq");
+const btnLike = document.getElementById("btn-like");
+
+const EQ_BARS = 24;
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 let mixes = [];
 let ws = null;
 let current = null;
+let audioCtx = null;
+let analyser = null;
+let freqData = null;
+let eqBars = [];
+let rafId = 0;
+let sourceNode = null;
+let sourceEl = null;
 
 const fmt = (s) => {
   s = Math.max(0, Math.floor(s || 0));
   return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 };
+
+const likeKey = (id) => `room90_like_${id}`;
+const likeCount = (m) => (m.likes || 0) + (localStorage.getItem(likeKey(m.id)) ? 1 : 0);
+const isLiked = (m) => !!localStorage.getItem(likeKey(m.id));
+
+function setupEq() {
+  if (reduceMotion || eqBars.length) return;
+  for (let i = 0; i < EQ_BARS; i++) {
+    const b = document.createElement("div");
+    b.className = "eq-bar";
+    eqBox.append(b);
+    eqBars.push(b);
+  }
+}
+
+function attachAnalyser() {
+  if (reduceMotion || !ws) return;
+  const el = ws.getMediaElement();
+  if (!el || el === sourceEl) return;
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.8;
+      freqData = new Uint8Array(analyser.frequencyBinCount);
+      analyser.connect(audioCtx.destination);
+    }
+    if (sourceNode) { try { sourceNode.disconnect(); } catch {} }
+    sourceNode = audioCtx.createMediaElementSource(el);
+    sourceNode.connect(analyser);
+    sourceEl = el;
+  } catch {
+    analyser = null;
+  }
+}
+
+function eqFrame() {
+  rafId = requestAnimationFrame(eqFrame);
+  if (!analyser || !ws) return;
+  analyser.getByteFrequencyData(freqData);
+  const step = Math.floor(freqData.length / EQ_BARS) || 1;
+  for (let i = 0; i < EQ_BARS; i++) {
+    const v = freqData[i * step] / 255;
+    eqBars[i].style.transform = `scaleY(${Math.max(0.06, v)})`;
+  }
+}
+
+function stopEq() {
+  cancelAnimationFrame(rafId);
+  rafId = 0;
+  for (const b of eqBars) b.style.transform = "scaleY(0.06)";
+}
+
+function startEq() {
+  if (reduceMotion || !analyser || rafId) return;
+  eqFrame();
+}
+
+function refreshLikeUI() {
+  if (!current) return;
+  btnLike.setAttribute("aria-pressed", String(isLiked(current)));
+  renderLikes(current.id);
+}
+
+function renderLikes(id) {
+  const el = document.querySelector(`[data-likes="${id}"]`);
+  if (!el) return;
+  const m = mixes.find((x) => x.id === id);
+  if (!m) return;
+  const likes = likeCount(m);
+  el.textContent = likes > 0 ? `♥ ${likes}` : "";
+}
 
 async function boot() {
   try {
@@ -65,12 +150,16 @@ async function boot() {
     const meta = document.createElement("span");
     meta.className = "tape-meta";
     meta.textContent = `${m.genre} · ${m.durationText} · ${m.date}`;
-    body.append(t, meta);
+    const likes = document.createElement("span");
+    likes.className = "tape-likes";
+    likes.dataset.likes = m.id;
+    body.append(t, meta, likes);
     b.append(thumb, body);
     b.addEventListener("click", () => loadMix(m));
     li.append(b);
     list.append(li);
   }
+  for (const m of mixes) renderLikes(m.id);
   const last = localStorage.getItem("room90_last");
   const saved = mixes.find((m) => m.id === last) || mixes[0];
   await loadMix(saved, { autoplay: false });
@@ -92,6 +181,7 @@ async function loadMix(m, { autoplay = true } = {}) {
   }
   btnRetry.hidden = true;
   btnPlay.textContent = "···";
+  stopEq();
   if (ws) { ws.destroy(); ws = null; }
   ws = WaveSurfer.create({
     container: waveBox,
@@ -102,6 +192,7 @@ async function loadMix(m, { autoplay = true } = {}) {
     interact: true,
   });
   ws.setVolume(parseFloat(vol.value || "0.8"));
+  refreshLikeUI();
   ws.on("timeupdate", (t) => {
     npTime.textContent = `${fmt(t)} / ${m.durationText}`;
   });
@@ -121,13 +212,29 @@ async function loadMix(m, { autoplay = true } = {}) {
   }
   btnPlay.textContent = "▶";
   localStorage.setItem("room90_last", m.id);
-  if (autoplay) { ws.play(); btnPlay.textContent = "⏸"; }
+  attachAnalyser();
+  if (autoplay) { ws.play(); btnPlay.textContent = "⏸"; startEq(); }
 }
 
 btnPlay.addEventListener("click", async () => {
   if (!ws) return;
   const playing = await ws.playPause();
   btnPlay.textContent = playing ? "⏸" : "▶";
+  if (playing) {
+    if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+    attachAnalyser();
+    startEq();
+  } else {
+    stopEq();
+  }
+});
+
+btnLike.addEventListener("click", () => {
+  if (!current) return;
+  const k = likeKey(current.id);
+  if (localStorage.getItem(k)) localStorage.removeItem(k);
+  else localStorage.setItem(k, "1");
+  refreshLikeUI();
 });
 
 btnRetry.addEventListener("click", () => {
@@ -153,6 +260,7 @@ vol.addEventListener("input", () => {
 const savedVol = localStorage.getItem("room90_vol");
 if (savedVol !== null) vol.value = savedVol;
 
+setupEq();
 npImage.addEventListener("error", () => { npImage.hidden = true; });
 
 function openAbout() {

@@ -178,6 +178,9 @@ input:focus-visible {
   z-index: 10;
 }
 
+/* Alasan: display:flex menang atas [hidden] bawaan browser, jadi harus dipaksa */
+.modal-overlay[hidden] { display: none; }
+
 .modal {
   position: relative;
   background: #0a0a0a;

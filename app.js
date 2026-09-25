@@ -7,6 +7,8 @@ const npTitle = document.getElementById("np-title");
 const npGenre = document.getElementById("np-genre");
 const npTime = document.getElementById("np-time");
 const btnPlay = document.getElementById("btn-play");
+const btnPrev = document.getElementById("btn-prev");
+const btnNext = document.getElementById("btn-next");
 const btnRetry = document.getElementById("btn-retry");
 const vol = document.getElementById("vol");
 const waveBox = document.getElementById("waveform");
@@ -78,7 +80,7 @@ async function loadMix(m, { autoplay = true } = {}) {
   ws.on("timeupdate", (t) => {
     npTime.textContent = `${fmt(t)} / ${m.durationText}`;
   });
-  ws.on("finish", () => { btnPlay.textContent = "▶"; });
+  ws.on("finish", () => { step(1); });
   ws.on("error", (e) => {
     npTime.textContent = `Gagal load audio (${e?.message || "error"}).`;
     btnPlay.textContent = "▶";
@@ -106,6 +108,16 @@ btnPlay.addEventListener("click", async () => {
 btnRetry.addEventListener("click", () => {
   if (current) loadMix(current);
 });
+
+function step(dir) {
+  if (!mixes.length) return;
+  const i = mixes.findIndex((m) => current && m.id === current.id);
+  const n = mixes[(i + dir + mixes.length) % mixes.length];
+  loadMix(n);
+}
+
+btnPrev.addEventListener("click", () => step(-1));
+btnNext.addEventListener("click", () => step(1));
 
 vol.addEventListener("input", () => {
   const v = parseFloat(vol.value);

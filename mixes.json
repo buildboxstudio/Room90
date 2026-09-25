@@ -13,5 +13,35 @@
     "coverColor": "#d4ff32",
     "tracklist": [],
     "notes": ""
+  },
+  {
+    "id": "room90-02",
+    "title": "Insomnia Vol.2",
+    "artist": "Moxxsa",
+    "date": "2024-06-08",
+    "genre": "Tech House",
+    "durationSec": 2085,
+    "durationText": "34:45",
+    "audioUrl": "https://files.catbox.moe/37tiv0.mp3",
+    "peaksUrl": "peaks/insomnia-vol2.json",
+    "bpm": null,
+    "coverColor": "#ff4d00",
+    "tracklist": [],
+    "notes": ""
+  },
+  {
+    "id": "room90-03",
+    "title": "Insomnia Vol.3",
+    "artist": "Moxxsa",
+    "date": "2024-06-16",
+    "genre": "Deep House",
+    "durationSec": 3664,
+    "durationText": "61:04",
+    "audioUrl": "https://files.catbox.moe/j9s5t7.mp3",
+    "peaksUrl": "peaks/insomnia-vol3.json",
+    "bpm": null,
+    "coverColor": "#d4ff32",
+    "tracklist": [],
+    "notes": ""
   }
 ]

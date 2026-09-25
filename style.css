@@ -109,6 +109,33 @@ input:focus-visible {
 .tape-meta { display: block; color: var(--muted); font-size: 0.85rem; margin-top: 0.25rem; }
 .tape-likes { color: var(--lime); }
 
+/* Alasan: rilis terbaru = info paling relevan, dibedakan ukuran + border, bukan sekadar badge */
+.tape-card--new {
+  flex-wrap: wrap;
+  border-width: 2px;
+  padding: 1rem;
+}
+
+.tape-card--new .tape-thumb {
+  width: 88px;
+  height: 88px;
+  flex-basis: 88px;
+}
+
+.tape-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--lime);
+  color: #080808;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.5rem;
+}
+
+.tape-card--new { position: relative; }
+
 /* Alasan: like = aksi sekunder, warna outline bukan solid, biar tidak menyaingi play */
 .like {
   background: transparent !important;

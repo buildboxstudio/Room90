@@ -49,5 +49,22 @@
     "coverColor": "#d4ff32",
     "tracklist": [],
     "notes": ""
+  },
+  {
+    "id": "room90-04",
+    "imageUrl": "images/2020Selectionmix.png",
+    "likes": 0,
+    "title": "Selection Mix I",
+    "artist": "Moxxsa",
+    "date": "2020-07-26",
+    "genre": "Bass House",
+    "durationSec": 3647,
+    "durationText": "60:47",
+    "audioUrl": "https://files.catbox.moe/cm3970.mp3",
+    "peaksUrl": "peaks/selection-mix-1.json",
+    "bpm": null,
+    "coverColor": "#ff4d00",
+    "tracklist": [],
+    "notes": ""
   }
 ]

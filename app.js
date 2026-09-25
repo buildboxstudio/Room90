@@ -21,6 +21,8 @@ const btnLike = document.getElementById("btn-like");
 
 const EQ_BARS = 24;
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const FADE_IN = 4;
+const FADE_OUT = 1.5;
 
 let mixes = [];
 let ws = null;
@@ -32,6 +34,8 @@ let eqBars = [];
 let rafId = 0;
 let sourceNode = null;
 let sourceEl = null;
+let fadeTimer = null;
+let fadingOut = false;
 
 const fmt = (s) => {
   s = Math.max(0, Math.floor(s || 0));
@@ -124,12 +128,16 @@ async function boot() {
     status.textContent = "Belum ada tape. Tambah entry di mixes.json.";
     return;
   }
+  mixes.sort((a, b) => b.date.localeCompare(a.date));
+  const newestDate = mixes[0]?.date;
   status.hidden = true;
   for (const m of mixes) {
     const li = document.createElement("li");
     const b = document.createElement("button");
     b.type = "button";
     b.className = "tape-card";
+    const isNew = m.date === newestDate;
+    if (isNew) b.classList.add("tape-card--new");
     const no = m.id.replace("room90-", "#");
     const thumb = document.createElement("img");
     thumb.className = "tape-thumb";
@@ -154,6 +162,12 @@ async function boot() {
     likes.className = "tape-likes";
     likes.dataset.likes = m.id;
     body.append(t, meta, likes);
+    if (isNew) {
+      const badge = document.createElement("span");
+      badge.className = "tape-badge";
+      badge.textContent = "NEW";
+      body.append(badge);
+    }
     b.append(thumb, body);
     b.addEventListener("click", () => loadMix(m));
     li.append(b);
@@ -182,6 +196,8 @@ async function loadMix(m, { autoplay = true } = {}) {
   btnRetry.hidden = true;
   btnPlay.textContent = "···";
   stopEq();
+  cancelFade();
+  fadingOut = false;
   if (ws) { ws.destroy(); ws = null; }
   ws = WaveSurfer.create({
     container: waveBox,
@@ -195,6 +211,10 @@ async function loadMix(m, { autoplay = true } = {}) {
   refreshLikeUI();
   ws.on("timeupdate", (t) => {
     npTime.textContent = `${fmt(t)} / ${m.durationText}`;
+    if (!reduceMotion && !fadingOut && m.durationSec - t <= FADE_OUT) {
+      fadingOut = true;
+      fadeVolume(0, m.durationSec - t);
+    }
   });
   ws.on("finish", () => { step(1); });
   ws.on("error", (e) => {
@@ -213,7 +233,33 @@ async function loadMix(m, { autoplay = true } = {}) {
   btnPlay.textContent = "▶";
   localStorage.setItem("room90_last", m.id);
   attachAnalyser();
-  if (autoplay) { ws.play(); btnPlay.textContent = "⏸"; startEq(); }
+  if (autoplay) {
+    ws.play();
+    btnPlay.textContent = "⏸";
+    startEq();
+    if (!reduceMotion) fadeVolume(targetVolume(), FADE_IN);
+  }
+}
+
+function targetVolume() {
+  return parseFloat(vol.value || "0.8");
+}
+
+function fadeVolume(to, seconds) {
+  if (!ws || seconds <= 0) { if (ws) ws.setVolume(to); return; }
+  cancelFade();
+  const from = ws.getVolume();
+  const steps = Math.max(1, Math.round(seconds * 20));
+  let i = 0;
+  fadeTimer = setInterval(() => {
+    i++;
+    ws.setVolume(from + (to - from) * (i / steps));
+    if (i >= steps) cancelFade();
+  }, 50);
+}
+
+function cancelFade() {
+  if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
 }
 
 btnPlay.addEventListener("click", async () => {
@@ -224,6 +270,7 @@ btnPlay.addEventListener("click", async () => {
     if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
     attachAnalyser();
     startEq();
+    if (fadingOut) { fadingOut = false; }
   } else {
     stopEq();
   }

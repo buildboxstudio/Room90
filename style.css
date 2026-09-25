@@ -4,7 +4,7 @@
   --muted: #9a9a94;
   --lime: #d4ff32;
   --line: #1c1c18;
-  --player-h: 190px;
+  --player-h: 155px;
 }
 
 * { box-sizing: border-box; }
@@ -19,7 +19,7 @@ body {
 }
 
 .hero {
-  padding: 3rem 1.25rem 1rem;
+  padding: 3rem 1.25rem 1.25rem;
   border-bottom: 2px solid var(--line);
 }
 
@@ -38,7 +38,20 @@ body {
 
 .hero-sub { color: var(--muted); margin: 0 0 1rem; }
 
-/* Alasan: ghost button = aksi sekunder, tidak bersaing dengan play */
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.hero-stats {
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+}
+
+/* Ghost button: secondary action */
 .ghost {
   font: inherit;
   background: transparent;
@@ -47,24 +60,56 @@ body {
   padding: 0.6rem 1rem;
   min-height: 44px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
 }
 
-.ghost:hover { background: rgba(212, 255, 50, 0.1); }
+.ghost:hover { background: rgba(212, 255, 50, 0.12); }
 
-main { padding: 1.25rem; max-width: 720px; }
+main { padding: 1.25rem; max-width: 760px; }
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1rem;
+}
 
 .section-title {
   font-size: 1rem;
   letter-spacing: 0.15em;
   color: var(--lime);
-  margin: 0 0 1rem;
+  margin: 0;
+}
+
+.keyboard-hint {
+  color: #55554f;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
 }
 
 .status { color: var(--muted); }
 
+.status--warn {
+  background: #141308;
+  border: 1px solid var(--lime);
+  padding: 1rem;
+  color: var(--text);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.status--warn code {
+  background: #222;
+  padding: 0.1rem 0.35rem;
+  color: var(--lime);
+}
+
 .tape-list { list-style: none; margin: 0; padding: 0; }
 
-/* Alasan: satu kartu per tape dengan border kiri tebal lime = motif identitas ROOM90 */
+/* Tape Card: neutral border by default; active state carries lime signal */
 .tape-card {
   width: 100%;
   display: flex;
@@ -74,15 +119,40 @@ main { padding: 1.25rem; max-width: 720px; }
   background: var(--bg);
   color: var(--text);
   border: 1px solid var(--line);
-  border-left: 6px solid var(--lime);
+  border-left: 2px solid transparent;
   padding: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.875rem;
   font: inherit;
   cursor: pointer;
   min-height: 44px;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-/* Alasan: cover 1:1 konsisten, bentuk kotak tajam ikut bahasa brutalist */
+.tape-card:hover {
+  background: #101010;
+  border-color: #2c2c26;
+}
+
+/* Active tape: clear lime visual cue */
+.tape-card--active {
+  background: #12120e;
+  border-color: #2c2c26;
+  border-left: 5px solid var(--lime);
+}
+
+.tape-card--active .tape-title {
+  color: var(--lime);
+}
+
+/* Sharp focus indicator */
+.tape-card:focus-visible,
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: 2px;
+}
+
 .tape-thumb {
   width: 56px;
   height: 56px;
@@ -93,33 +163,22 @@ main { padding: 1.25rem; max-width: 720px; }
 
 .tape-thumb-fallback { display: inline-block; }
 
-.tape-body { display: block; min-width: 0; }
-
-.tape-card:hover { background: #101010; }
-
-/* Alasan: focus lime tebal = satu-satunya penanda keyboard, tanpa glow */
-.tape-card:focus-visible,
-button:focus-visible,
-input:focus-visible {
-  outline: 3px solid var(--lime);
-  outline-offset: 2px;
-}
+.tape-body { display: block; min-width: 0; flex: 1; }
 
 .tape-title { display: block; font-weight: 700; font-size: 1.05rem; }
 .tape-meta { display: block; color: var(--muted); font-size: 0.85rem; margin-top: 0.25rem; }
-.tape-likes { color: var(--lime); }
+.tape-likes { color: var(--lime); margin-left: 0.5rem; font-size: 0.85rem; }
 
-/* Alasan: rilis terbaru = info paling relevan, dibedakan ukuran + border, bukan sekadar badge */
+/* New release highlight */
 .tape-card--new {
-  flex-wrap: wrap;
-  border-width: 2px;
-  padding: 1rem;
+  position: relative;
+  border-color: #2a2a22;
 }
 
 .tape-card--new .tape-thumb {
-  width: 88px;
-  height: 88px;
-  flex-basis: 88px;
+  width: 72px;
+  height: 72px;
+  flex-basis: 72px;
 }
 
 .tape-badge {
@@ -128,27 +187,13 @@ input:focus-visible {
   right: 0;
   background: var(--lime);
   color: #080808;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  padding: 0.2rem 0.5rem;
+  padding: 0.15rem 0.45rem;
 }
 
-.tape-card--new { position: relative; }
-
-/* Alasan: like = aksi sekunder, warna outline bukan solid, biar tidak menyaingi play */
-.like {
-  background: transparent !important;
-  color: var(--muted);
-  border: 1px solid var(--line) !important;
-  font-size: 1.1rem;
-}
-
-.like[aria-pressed="true"] {
-  color: #ff4d00;
-  border-color: #ff4d00 !important;
-}
-
+/* Player Dock */
 .player {
   position: fixed;
   left: 0;
@@ -156,58 +201,114 @@ input:focus-visible {
   bottom: 0;
   background: #0a0a0a;
   border-top: 2px solid var(--lime);
-  padding: 0.75rem 1.25rem calc(0.75rem + env(safe-area-inset-bottom));
+  padding: 0.65rem 1.25rem calc(0.65rem + env(safe-area-inset-bottom));
+  z-index: 5;
 }
 
 .player-meta {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
-/* Alasan: cover di player menegaskan sedang play tape mana, seperti sleeve kasat mata */
 .np-image {
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
   object-fit: cover;
   border: 1px solid var(--lime);
 }
 
-.np-title { margin: 0; font-weight: 700; }
+.np-info { min-width: 0; flex: 1; }
+
+.np-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .np-sub { margin: 0; color: var(--muted); font-size: 0.8rem; }
 
-/* Alasan: waveform jadi focal point player, warna lime di latar gelap = identitas tape deck */
 .waveform {
-  min-height: 64px;
+  min-height: 56px;
   background: #000;
   cursor: pointer;
+  border: 1px solid #141412;
 }
 
 .controls {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: 0.75rem;
+  margin-top: 0.4rem;
 }
 
-.controls button {
+/* Brutalist geometric controls */
+.btn-ctrl {
   font: inherit;
   background: var(--lime);
   color: #080808;
   border: 0;
   min-width: 44px;
   min-height: 44px;
-  padding: 0 1rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.1s ease;
+}
+
+.btn-ctrl:hover { opacity: 0.9; }
+
+.btn-play {
+  min-width: 50px;
+  min-height: 44px;
+}
+
+.icon-loading {
   font-weight: 700;
+  letter-spacing: -0.1em;
+}
+
+.like {
+  background: transparent !important;
+  color: var(--muted);
+  border: 1px solid var(--line) !important;
+}
+
+.like[aria-pressed="true"] {
+  color: #ff4d00;
+  border-color: #ff4d00 !important;
+}
+
+.vol {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-left: auto;
+}
+
+.vol input {
+  accent-color: var(--lime);
+  width: 110px;
+}
+
+.btn-retry {
+  background: transparent;
+  color: #ff4d00;
+  border: 1px solid #ff4d00;
+  padding: 0.4rem 0.8rem;
   cursor: pointer;
 }
 
-.vol { display: flex; align-items: center; gap: 0.5rem; color: var(--muted); font-size: 0.8rem; }
-.vol input { accent-color: var(--lime); width: 120px; }
-
-/* Alasan: about = lapisan informasi sekunder, overlay gelap + border lime menegaskan fokus */
+/* Modal About */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -219,40 +320,38 @@ input:focus-visible {
   z-index: 10;
 }
 
-/* Alasan: display:flex menang atas [hidden] bawaan browser, jadi harus dipaksa */
 .modal-overlay[hidden] { display: none; }
 
 .modal {
   position: relative;
   background: #0a0a0a;
   border: 2px solid var(--lime);
-  max-width: 520px;
+  max-width: 540px;
   width: 100%;
   max-height: 85vh;
   overflow-y: auto;
   padding: 1.5rem;
 }
 
-.modal h2 { margin: 0 0 1rem; font-size: 1.2rem; }
-
+.modal h2 { margin: 0 0 1rem; font-size: 1.25rem; color: var(--lime); }
 .modal p { margin: 0 0 1rem; color: var(--text); }
 
 .modal-close {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  font: inherit;
-  font-size: 1.4rem;
-  line-height: 1;
   background: transparent;
   color: var(--lime);
   border: 0;
   min-width: 44px;
   min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 
-.modal-links { display: flex; gap: 1rem; margin-top: 1.25rem; }
+.modal-links { display: flex; gap: 1.25rem; margin-top: 1.25rem; }
 
 .modal-links a {
   display: inline-flex;
@@ -261,14 +360,25 @@ input:focus-visible {
   color: var(--lime);
   text-decoration: none;
   min-height: 44px;
-  padding: 0.25rem 0;
   border-bottom: 1px solid transparent;
 }
 
-.modal-links a:hover { color: var(--orange, #ff4d00); border-bottom-color: #ff4d00; }
+.modal-links a:hover {
+  color: #ff4d00;
+  border-bottom-color: #ff4d00;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none; }
+  * { transition: none !important; }
+}
+
+@media (max-width: 600px) {
+  :root { --player-h: 135px; }
+  .keyboard-hint { display: none; }
+  .vol { display: none; }
+  .hero { padding: 2rem 1rem 1rem; }
+  main { padding: 1rem; }
+  .waveform { min-height: 48px; }
 }
 
 @media (min-width: 600px) {

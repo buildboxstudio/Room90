@@ -10,8 +10,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<script type="importmap">
-{"imports":{"wavesurfer.js":"https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js"}}
+<script src="wavesurfer.min.js"></script>
+<script>
+  if (window.location.protocol === "file:") {
+    document.addEventListener("DOMContentLoaded", function() {
+      var s = document.getElementById("status");
+      if (s) {
+        s.className = "status status--warn";
+        s.innerHTML = "⚠️ <strong>File dibuka via file:// protocol.</strong><br>Browser memblokir pembacaan file data karena kebijakan keamanan (CORS).<br><br>Cara menjalankan:<br>1. Buka PowerShell di folder projek ini.<br>2. Ketik: <code>python -m http.server 8000</code><br>3. Buka browser: <a href=\"http://localhost:8000\" style=\"color:var(--lime)\">http://localhost:8000</a><br>Atau buka versi online di GitHub Pages.";
+      }
+    });
+  }
 </script>
 </head>
 <body>
@@ -19,12 +28,18 @@
   <p class="hero-kicker">ROOM90 //</p>
   <h1>MoxxTape Archive</h1>
   <p class="hero-sub">Bedroom tapes. By <strong>Moxxsa</strong>.</p>
-  <button id="btn-about" class="ghost" type="button">About MOXXSA</button>
+  <div class="hero-meta">
+    <button id="btn-about" class="ghost" type="button">About MOXXSA</button>
+    <span id="hero-stats" class="hero-stats"></span>
+  </div>
 </header>
 
 <main>
   <section aria-label="Daftar tape">
-    <h2 class="section-title">Tapes</h2>
+    <div class="section-header">
+      <h2 class="section-title">Tapes</h2>
+      <span class="keyboard-hint" aria-hidden="true">Space: Play/Pause · Shift+N/P: Next/Prev</span>
+    </div>
     <p id="status" class="status" role="status">Loading tapes...</p>
     <ol id="tape-list" class="tape-list"></ol>
   </section>
@@ -33,31 +48,44 @@
 <footer id="player" class="player" hidden>
   <div class="player-meta">
     <img id="np-image" class="np-image" alt="" hidden>
-    <div>
+    <div class="np-info">
       <p id="np-title" class="np-title">Pilih tape dulu</p>
       <p class="np-sub"><span id="np-genre">-</span> · <span id="np-time">00:00 / 00:00</span></p>
     </div>
   </div>
   <div id="waveform" class="waveform" role="slider" aria-label="Seek" tabindex="0"></div>
   <div class="controls">
-    <button id="btn-prev" type="button" aria-label="Tape sebelumnya">⏮</button>
-    <button id="btn-play" type="button" aria-label="Play atau pause">▶</button>
-    <button id="btn-next" type="button" aria-label="Tape berikutnya">⏭</button>
-    <button id="btn-like" class="like" type="button" aria-pressed="false" aria-label="Like tape ini">♥</button>
-    <label class="vol">Vol
+    <button id="btn-prev" class="btn-ctrl" type="button" aria-label="Tape sebelumnya" title="Tape sebelumnya (Shift+P)">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M6 5v14h3V5H6zm3.5 7L20 19V5l-10.5 7z"/></svg>
+    </button>
+    <button id="btn-play" class="btn-ctrl btn-play" type="button" aria-label="Play atau pause" title="Play / Pause (Space)">
+      <svg id="icon-play" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="icon-pause" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" hidden><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+      <span id="icon-loading" class="icon-loading" hidden>···</span>
+    </button>
+    <button id="btn-next" class="btn-ctrl" type="button" aria-label="Tape berikutnya" title="Tape berikutnya (Shift+N)">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M4 5v14l10.5-7L4 5zm11 0v14h3V5h-3z"/></svg>
+    </button>
+    <button id="btn-like" class="like btn-ctrl" type="button" aria-pressed="false" aria-label="Like tape ini" title="Like">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </button>
+    <label class="vol">
+      <span>Vol</span>
       <input id="vol" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volume">
     </label>
-    <button id="btn-retry" type="button" hidden>Coba lagi</button>
+    <button id="btn-retry" class="btn-retry" type="button" hidden>Coba lagi</button>
   </div>
 </footer>
 
 <div id="about-modal" class="modal-overlay" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="about-title">
-    <button id="btn-about-close" class="modal-close" type="button" aria-label="Tutup">×</button>
+    <button id="btn-about-close" class="modal-close" type="button" aria-label="Tutup">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
     <h2 id="about-title">About MOXXSA</h2>
     <p>Bedroom DJ from Yogyakarta (Indonesia), obsessed with Deep House, Tech House, House Music, Progressive House, and Electro House. For the first time, he used TMNDNS for his stage name. But he decided to change his name with MOXXSA, it's from Sansekerta language that means Reincarnation.</p>
     <p>In first 2016 he joins with DJ school to absorb and seek knowledge about DJ-ing. In 2017 he made a project named "Bedroom Sessions" to change his old project in 2016 named "Sunday Sessions". With this new project, he chooses a genre from deep house, tech house, house, big room, and for the last electro house.</p>
-    <p>In 2024, he embarked on a musical journey, pushing the boundaries of his DJ skills and exploring new genres. He delved into the rhythmic complexities of Koplo and the laid-back grooves of Reggae, integrating these unique sounds into his mixes.</p>
+    <p>In 2024, he embarked on a musical journey, pushing the boundaries of his DJ skills and exploring new genres. He delved into the rhythmic complexities of Koplo dan the laid-back grooves of Reggae, integrating these unique sounds into his mixes.</p>
     <div class="modal-links">
       <a href="https://www.instagram.com/kehidupunx" target="_blank" rel="noopener" aria-label="Instagram kehidupunx">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>
@@ -72,6 +100,6 @@
 </div>
 
 <noscript><p class="status">Player butuh JavaScript. Aktifkan dulu.</p></noscript>
-<script type="module" src="app.js"></script>
+<script defer src="app.js"></script>
 </body>
 </html>

@@ -12,6 +12,10 @@ const btnNext = document.getElementById("btn-next");
 const btnRetry = document.getElementById("btn-retry");
 const vol = document.getElementById("vol");
 const waveBox = document.getElementById("waveform");
+const npImage = document.getElementById("np-image");
+const btnAbout = document.getElementById("btn-about");
+const aboutModal = document.getElementById("about-modal");
+const btnAboutClose = document.getElementById("btn-about-close");
 
 let mixes = [];
 let ws = null;
@@ -42,14 +46,27 @@ async function boot() {
     b.type = "button";
     b.className = "tape-card";
     const no = m.id.replace("room90-", "#");
-    b.innerHTML = "";
+    const thumb = document.createElement("img");
+    thumb.className = "tape-thumb";
+    thumb.alt = m.title;
+    thumb.loading = "lazy";
+    thumb.src = m.imageUrl || "";
+    thumb.addEventListener("error", () => {
+      thumb.replaceWith(Object.assign(document.createElement("span"), {
+        className: "tape-thumb tape-thumb-fallback",
+        style: `background:${m.coverColor || "#d4ff32"}`,
+      }));
+    });
+    const body = document.createElement("span");
+    body.className = "tape-body";
     const t = document.createElement("span");
     t.className = "tape-title";
     t.textContent = `ROOM90 ${no} / ${m.title}`;
     const meta = document.createElement("span");
     meta.className = "tape-meta";
     meta.textContent = `${m.genre} · ${m.durationText} · ${m.date}`;
-    b.append(t, meta);
+    body.append(t, meta);
+    b.append(thumb, body);
     b.addEventListener("click", () => loadMix(m));
     li.append(b);
     list.append(li);
@@ -65,6 +82,14 @@ async function loadMix(m, { autoplay = true } = {}) {
   npTitle.textContent = `ROOM90 ${m.id.replace("room90-", "#")} / ${m.title}`;
   npGenre.textContent = m.genre;
   npTime.textContent = `00:00 / ${m.durationText}`;
+  if (m.imageUrl) {
+    npImage.src = m.imageUrl;
+    npImage.alt = m.title;
+    npImage.hidden = false;
+  } else {
+    npImage.removeAttribute("src");
+    npImage.hidden = true;
+  }
   btnRetry.hidden = true;
   btnPlay.textContent = "···";
   if (ws) { ws.destroy(); ws = null; }
@@ -127,5 +152,20 @@ vol.addEventListener("input", () => {
 
 const savedVol = localStorage.getItem("room90_vol");
 if (savedVol !== null) vol.value = savedVol;
+
+npImage.addEventListener("error", () => { npImage.hidden = true; });
+
+function openAbout() {
+  aboutModal.hidden = false;
+  btnAboutClose.focus();
+}
+function closeAbout() {
+  aboutModal.hidden = true;
+  btnAbout.focus();
+}
+btnAbout.addEventListener("click", openAbout);
+btnAboutClose.addEventListener("click", closeAbout);
+aboutModal.addEventListener("click", (e) => { if (e.target === aboutModal) closeAbout(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !aboutModal.hidden) closeAbout(); });
 
 boot();

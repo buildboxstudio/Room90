@@ -19,6 +19,7 @@
   <p class="hero-kicker">ROOM90 //</p>
   <h1>Private Tape Archive</h1>
   <p class="hero-sub">Bedroom tapes since the 90s. By <strong>Moxxsa</strong>.</p>
+  <button id="btn-about" class="ghost" type="button">About MOXXSA</button>
 </header>
 
 <main>
@@ -31,8 +32,11 @@
 
 <footer id="player" class="player" hidden>
   <div class="player-meta">
-    <p id="np-title" class="np-title">Pilih tape dulu</p>
-    <p class="np-sub"><span id="np-genre">-</span> · <span id="np-time">00:00 / 00:00</span></p>
+    <img id="np-image" class="np-image" alt="" hidden>
+    <div>
+      <p id="np-title" class="np-title">Pilih tape dulu</p>
+      <p class="np-sub"><span id="np-genre">-</span> · <span id="np-time">00:00 / 00:00</span></p>
+    </div>
   </div>
   <div id="waveform" class="waveform" role="slider" aria-label="Seek" tabindex="0"></div>
   <div class="controls">
@@ -45,6 +49,26 @@
     <button id="btn-retry" type="button" hidden>Coba lagi</button>
   </div>
 </footer>
+
+<div id="about-modal" class="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="about-title">
+    <button id="btn-about-close" class="modal-close" type="button" aria-label="Tutup">×</button>
+    <h2 id="about-title">About MOXXSA</h2>
+    <p>Bedroom DJ from Yogyakarta (Indonesia), obsessed with Deep House, Tech House, House Music, Progressive House, and Electro House. For the first time, he used TMNDNS for his stage name. But he decided to change his name with MOXXSA, it's from Sansekerta language that means Reincarnation.</p>
+    <p>In first 2016 he joins with DJ school to absorb and seek knowledge about DJ-ing. In 2017 he made a project named "Bedroom Sessions" to change his old project in 2016 named "Sunday Sessions". With this new project, he chooses a genre from deep house, tech house, house, big room, and for the last electro house.</p>
+    <p>In 2024, he embarked on a musical journey, pushing the boundaries of his DJ skills and exploring new genres. He delved into the rhythmic complexities of Koplo and the laid-back grooves of Reggae, integrating these unique sounds into his mixes.</p>
+    <div class="modal-links">
+      <a href="https://www.instagram.com/kehidupunx" target="_blank" rel="noopener" aria-label="Instagram kehidupunx">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>
+        Instagram
+      </a>
+      <a href="https://www.mixcloud.com/moxxxsa/" target="_blank" rel="noopener" aria-label="Mixcloud moxxxsa">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 17h.01"/><circle cx="6" cy="14" r="3"/><circle cx="16" cy="12" r="5"/></svg>
+        Mixcloud
+      </a>
+    </div>
+  </div>
+</div>
 
 <noscript><p class="status">Player butuh JavaScript. Aktifkan dulu.</p></noscript>
 <script type="module" src="app.js"></script>

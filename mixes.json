@@ -1,6 +1,7 @@
 [
   {
     "id": "room90-01",
+    "imageUrl": "images/vol1.jpg",
     "title": "Insomnia Vol.1",
     "artist": "Moxxsa",
     "date": "2022-09-16",
@@ -16,6 +17,7 @@
   },
   {
     "id": "room90-02",
+    "imageUrl": "images/vol2.jpg",
     "title": "Insomnia Vol.2",
     "artist": "Moxxsa",
     "date": "2024-06-08",
@@ -31,6 +33,7 @@
   },
   {
     "id": "room90-03",
+    "imageUrl": "images/vol3.jpg",
     "title": "Insomnia Vol.3",
     "artist": "Moxxsa",
     "date": "2024-06-16",

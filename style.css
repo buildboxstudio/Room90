@@ -185,28 +185,6 @@ input:focus-visible {
   cursor: pointer;
 }
 
-/* Alasan: equalizer = satu-satunya elemen yang bergerak, memberi sinyal "sedang diputar" */
-.eq {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 36px;
-  margin-bottom: 0.5rem;
-}
-
-.eq-bar {
-  flex: 1;
-  height: 100%;
-  background: var(--lime);
-  transform: scaleY(0.06);
-  transform-origin: bottom;
-  transition: transform 90ms linear;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .eq { display: none; }
-}
-
 .controls {
   display: flex;
   align-items: center;

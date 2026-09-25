@@ -16,26 +16,11 @@ const npImage = document.getElementById("np-image");
 const btnAbout = document.getElementById("btn-about");
 const aboutModal = document.getElementById("about-modal");
 const btnAboutClose = document.getElementById("btn-about-close");
-const eqBox = document.getElementById("eq");
 const btnLike = document.getElementById("btn-like");
-
-const EQ_BARS = 24;
-const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const FADE_IN = 4;
-const FADE_OUT = 1.5;
 
 let mixes = [];
 let ws = null;
 let current = null;
-let audioCtx = null;
-let analyser = null;
-let freqData = null;
-let eqBars = [];
-let rafId = 0;
-let sourceNode = null;
-let sourceEl = null;
-let fadeTimer = null;
-let fadingOut = false;
 
 const fmt = (s) => {
   s = Math.max(0, Math.floor(s || 0));
@@ -45,60 +30,6 @@ const fmt = (s) => {
 const likeKey = (id) => `room90_like_${id}`;
 const likeCount = (m) => (m.likes || 0) + (localStorage.getItem(likeKey(m.id)) ? 1 : 0);
 const isLiked = (m) => !!localStorage.getItem(likeKey(m.id));
-
-function setupEq() {
-  if (reduceMotion || eqBars.length) return;
-  for (let i = 0; i < EQ_BARS; i++) {
-    const b = document.createElement("div");
-    b.className = "eq-bar";
-    eqBox.append(b);
-    eqBars.push(b);
-  }
-}
-
-function attachAnalyser() {
-  if (reduceMotion || !ws) return;
-  const el = ws.getMediaElement();
-  if (!el || el === sourceEl) return;
-  try {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.8;
-      freqData = new Uint8Array(analyser.frequencyBinCount);
-      analyser.connect(audioCtx.destination);
-    }
-    if (sourceNode) { try { sourceNode.disconnect(); } catch {} }
-    sourceNode = audioCtx.createMediaElementSource(el);
-    sourceNode.connect(analyser);
-    sourceEl = el;
-  } catch {
-    analyser = null;
-  }
-}
-
-function eqFrame() {
-  rafId = requestAnimationFrame(eqFrame);
-  if (!analyser || !ws) return;
-  analyser.getByteFrequencyData(freqData);
-  const step = Math.floor(freqData.length / EQ_BARS) || 1;
-  for (let i = 0; i < EQ_BARS; i++) {
-    const v = freqData[i * step] / 255;
-    eqBars[i].style.transform = `scaleY(${Math.max(0.06, v)})`;
-  }
-}
-
-function stopEq() {
-  cancelAnimationFrame(rafId);
-  rafId = 0;
-  for (const b of eqBars) b.style.transform = "scaleY(0.06)";
-}
-
-function startEq() {
-  if (reduceMotion || !analyser || rafId) return;
-  eqFrame();
-}
 
 function refreshLikeUI() {
   if (!current) return;
@@ -195,9 +126,6 @@ async function loadMix(m, { autoplay = true } = {}) {
   }
   btnRetry.hidden = true;
   btnPlay.textContent = "···";
-  stopEq();
-  cancelFade();
-  fadingOut = false;
   if (ws) { ws.destroy(); ws = null; }
   ws = WaveSurfer.create({
     container: waveBox,
@@ -211,10 +139,6 @@ async function loadMix(m, { autoplay = true } = {}) {
   refreshLikeUI();
   ws.on("timeupdate", (t) => {
     npTime.textContent = `${fmt(t)} / ${m.durationText}`;
-    if (!reduceMotion && !fadingOut && m.durationSec - t <= FADE_OUT) {
-      fadingOut = true;
-      fadeVolume(0, m.durationSec - t);
-    }
   });
   ws.on("finish", () => { step(1); });
   ws.on("error", (e) => {
@@ -232,48 +156,13 @@ async function loadMix(m, { autoplay = true } = {}) {
   }
   btnPlay.textContent = "▶";
   localStorage.setItem("room90_last", m.id);
-  attachAnalyser();
-  if (autoplay) {
-    ws.play();
-    btnPlay.textContent = "⏸";
-    startEq();
-    if (!reduceMotion) fadeVolume(targetVolume(), FADE_IN);
-  }
-}
-
-function targetVolume() {
-  return parseFloat(vol.value || "0.8");
-}
-
-function fadeVolume(to, seconds) {
-  if (!ws || seconds <= 0) { if (ws) ws.setVolume(to); return; }
-  cancelFade();
-  const from = ws.getVolume();
-  const steps = Math.max(1, Math.round(seconds * 20));
-  let i = 0;
-  fadeTimer = setInterval(() => {
-    i++;
-    ws.setVolume(from + (to - from) * (i / steps));
-    if (i >= steps) cancelFade();
-  }, 50);
-}
-
-function cancelFade() {
-  if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+  if (autoplay) { ws.play(); btnPlay.textContent = "⏸"; }
 }
 
 btnPlay.addEventListener("click", async () => {
   if (!ws) return;
   const playing = await ws.playPause();
   btnPlay.textContent = playing ? "⏸" : "▶";
-  if (playing) {
-    if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
-    attachAnalyser();
-    startEq();
-    if (fadingOut) { fadingOut = false; }
-  } else {
-    stopEq();
-  }
 });
 
 btnLike.addEventListener("click", () => {
@@ -307,7 +196,6 @@ vol.addEventListener("input", () => {
 const savedVol = localStorage.getItem("room90_vol");
 if (savedVol !== null) vol.value = savedVol;
 
-setupEq();
 npImage.addEventListener("error", () => { npImage.hidden = true; });
 
 function openAbout() {

@@ -519,17 +519,6 @@ body.glitching .waveform {
 
 .btn-support:hover { box-shadow: 0 0 16px rgba(255, 46, 151, 0.6); }
 
-.site-footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 2rem 1.25rem;
-  border-top: 2px solid var(--line);
-  margin-top: 2rem;
-}
-
 .changelog-list { list-style: none; margin: 0; padding: 0; }
 
 .changelog-ver {

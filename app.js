@@ -25,12 +25,23 @@ const skeleton = document.getElementById("skeleton");
 const btnShare = document.getElementById("btn-share");
 const volOut = document.getElementById("vol-out");
 const toast = document.getElementById("toast");
+const btnChangelog = document.getElementById("btn-changelog");
+const changelogModal = document.getElementById("changelog-modal");
+const btnChangelogClose = document.getElementById("btn-changelog-close");
 
 let mixes = [];
 let ws = null;
 let current = null;
 let isLoading = false;
 let toastTimer = null;
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function triggerGlitch() {
+  if (reduceMotion) return;
+  document.body.classList.add("glitching");
+  setTimeout(() => document.body.classList.remove("glitching"), 150);
+}
 
 const fmt = (s) => {
   s = Math.max(0, Math.floor(s || 0));
@@ -52,6 +63,7 @@ function setPlayState(state) {
   if (iconLoading) iconLoading.hidden = state !== "loading";
   if (iconPlay) iconPlay.hidden = state !== "paused";
   if (iconPause) iconPause.hidden = state !== "playing";
+  if (btnPlay) btnPlay.classList.toggle("is-playing", state === "playing");
 }
 
 function refreshLikeUI() {
@@ -219,6 +231,7 @@ async function loadMix(m, { autoplay = true } = {}) {
 
   btnRetry.hidden = true;
   setPlayState("loading");
+  triggerGlitch();
 
   if (ws) {
     ws.destroy();
@@ -363,14 +376,14 @@ if ("mediaSession" in navigator) {
 
 // Global Keyboard Shortcuts
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !aboutModal.hidden) {
-    closeAbout();
-    return;
+  if (e.key === "Escape") {
+    if (!aboutModal.hidden) { closeAbout(); return; }
+    if (!changelogModal.hidden) { closeChangelog(); return; }
   }
 
   // Jangan trigger shortcut jika user sedang mengetik di input atau modal terbuka
   const tag = document.activeElement?.tagName;
-  if (tag === "INPUT" || tag === "TEXTAREA" || !aboutModal.hidden) return;
+  if (tag === "INPUT" || tag === "TEXTAREA" || !aboutModal.hidden || !changelogModal.hidden) return;
 
   if (e.code === "Space") {
     e.preventDefault();
@@ -403,5 +416,19 @@ function closeAbout() {
 btnAbout.addEventListener("click", openAbout);
 btnAboutClose.addEventListener("click", closeAbout);
 aboutModal.addEventListener("click", (e) => { if (e.target === aboutModal) closeAbout(); });
+
+function openChangelog() {
+  changelogModal.hidden = false;
+  btnChangelogClose.focus();
+}
+
+function closeChangelog() {
+  changelogModal.hidden = true;
+  btnChangelog.focus();
+}
+
+btnChangelog.addEventListener("click", openChangelog);
+btnChangelogClose.addEventListener("click", closeChangelog);
+changelogModal.addEventListener("click", (e) => { if (e.target === changelogModal) closeChangelog(); });
 
 boot();

@@ -50,6 +50,48 @@
   </section>
 </main>
 
+<footer class="site-footer">
+  <a class="btn-support" href="https://buymeacoffee.com/buildboxstudio" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+    Support Me
+  </a>
+  <button id="btn-changelog" class="ghost" type="button">What's New</button>
+</footer>
+
+<div id="changelog-modal" class="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="changelog-title">
+    <button id="btn-changelog-close" class="modal-close" type="button" aria-label="Tutup">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <h2 id="changelog-title">What's New</h2>
+    <h3 class="changelog-ver">2026-09-26 // UX &amp; a11y</h3>
+    <ul class="changelog-list">
+      <li>Loading skeleton saat daftar tape diambil</li>
+      <li>Guard anti double-load di tombol play</li>
+      <li>Persentase volume tampil live</li>
+      <li>Tombol share + deep link (#mix=)</li>
+      <li>Animasi like, error state + retry</li>
+      <li>Waveform lebih tinggi di mobile (80px)</li>
+    </ul>
+    <h3 class="changelog-ver">2026-09-25 // Player</h3>
+    <ul class="changelog-list">
+      <li>Media Session: kontrol dari lock screen</li>
+      <li>Shortcut keyboard: Space, Shift+N/P, Alt panah</li>
+      <li>Cover art + About MOXXSA + Instagram/Mixcloud</li>
+      <li>Selection Mix I + urut tanggal rilis + badge NEW</li>
+      <li>Sortir rilis terbaru, like, counter di kartu</li>
+    </ul>
+    <h3 class="changelog-ver">2026-09-25 // v1.0</h3>
+    <ul class="changelog-list">
+      <li>Player vanilla + Wavesurfer peaks, stream Catbox</li>
+      <li>3 mixtape: Insomnia Vol.1-3</li>
+    </ul>
+    <p class="changelog-more">
+      <a href="https://github.com/buildboxstudio/Room90/commits/main" target="_blank" rel="noopener noreferrer">Riwayat lengkap di GitHub</a>
+    </p>
+  </div>
+</div>
+
 <footer id="player" class="player" hidden>
   <div class="player-meta">
     <img id="np-image" class="np-image" alt="" hidden>

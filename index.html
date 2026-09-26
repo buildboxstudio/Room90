@@ -41,7 +41,12 @@
       <span class="keyboard-hint" aria-hidden="true">Space: Play/Pause · Shift+N/P: Next/Prev</span>
     </div>
     <p id="status" class="status" role="status">Loading tapes...</p>
-    <ol id="tape-list" class="tape-list"></ol>
+    <ol id="tape-list" class="tape-list" hidden></ol>
+    <div id="skeleton" class="skeleton" aria-hidden="true">
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+    </div>
   </section>
 </main>
 
@@ -69,9 +74,13 @@
     <button id="btn-like" class="like btn-ctrl" type="button" aria-pressed="false" aria-label="Like tape ini" title="Like">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
     </button>
+    <button id="btn-share" class="btn-ctrl share" type="button" aria-label="Salin link tape ini" title="Share">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg>
+    </button>
     <label class="vol">
       <span>Vol</span>
       <input id="vol" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volume">
+      <output id="vol-out" class="vol-out">80%</output>
     </label>
     <button id="btn-retry" class="btn-retry" type="button" hidden>Coba lagi</button>
   </div>
@@ -100,6 +109,7 @@
 </div>
 
 <noscript><p class="status">Player butuh JavaScript. Aktifkan dulu.</p></noscript>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <script defer src="app.js"></script>
 </body>
 </html>

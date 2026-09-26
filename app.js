@@ -21,10 +21,16 @@ const iconPlay = document.getElementById("icon-play");
 const iconPause = document.getElementById("icon-pause");
 const iconLoading = document.getElementById("icon-loading");
 const heroStats = document.getElementById("hero-stats");
+const skeleton = document.getElementById("skeleton");
+const btnShare = document.getElementById("btn-share");
+const volOut = document.getElementById("vol-out");
+const toast = document.getElementById("toast");
 
 let mixes = [];
 let ws = null;
 let current = null;
+let isLoading = false;
+let toastTimer = null;
 
 const fmt = (s) => {
   s = Math.max(0, Math.floor(s || 0));
@@ -75,6 +81,14 @@ function highlightActiveCard(id) {
   });
 }
 
+function showToast(msg) {
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toast.hidden = true; }, 2000);
+}
+
 function updateMediaSession(m) {
   if (!("mediaSession" in navigator)) return;
   const meta = {
@@ -99,11 +113,13 @@ async function boot() {
     if (!r.ok) throw new Error("mixes.json tidak ketemu");
     mixes = await r.json();
   } catch (e) {
+    if (skeleton) skeleton.hidden = true;
     status.innerHTML = `Gagal load daftar tape (${e.message}). <button id="btn-reload" class="ghost" type="button" style="margin-left:0.5rem;padding:0.2rem 0.5rem">Muat Ulang</button>`;
     document.getElementById("btn-reload")?.addEventListener("click", () => location.reload());
     return;
   }
   if (!mixes.length) {
+    if (skeleton) skeleton.hidden = true;
     status.textContent = "Belum ada tape. Tambah entry di mixes.json.";
     return;
   }
@@ -111,6 +127,8 @@ async function boot() {
   mixes.sort((a, b) => b.date.localeCompare(a.date));
   const newestDate = mixes[0]?.date;
   status.hidden = true;
+  if (skeleton) skeleton.hidden = true;
+  list.hidden = false;
 
   if (heroStats) {
     const totalSec = mixes.reduce((acc, m) => acc + (m.durationSec || 0), 0);
@@ -170,14 +188,22 @@ async function boot() {
   for (const m of mixes) renderLikes(m.id);
 
   const last = localStorage.getItem("room90_last");
-  const saved = mixes.find((m) => m.id === last) || mixes[0];
+  const hashId = new URLSearchParams(location.hash.replace(/^#/, "")).get("mix");
+  const saved = mixes.find((m) => m.id === hashId)
+    || mixes.find((m) => m.id === last)
+    || mixes[0];
   await loadMix(saved, { autoplay: false });
 }
 
 async function loadMix(m, { autoplay = true } = {}) {
+  if (isLoading) return;
+  isLoading = true;
   current = m;
   player.hidden = false;
   highlightActiveCard(m.id);
+  if (location.hash.replace(/^#mix=/, "") !== m.id) {
+    history.replaceState(null, "", `#mix=${m.id}`);
+  }
   npTitle.textContent = `ROOM90 ${m.id.replace("room90-", "#")} / ${m.title}`;
   npGenre.textContent = m.genre;
   npTime.textContent = `00:00 / ${fmt(m.durationSec)}`;
@@ -202,6 +228,7 @@ async function loadMix(m, { autoplay = true } = {}) {
   if (!WaveSurfer) {
     npTime.textContent = "WaveSurfer library tidak tersedia.";
     setPlayState("paused");
+    isLoading = false;
     return;
   }
 
@@ -236,10 +263,16 @@ async function loadMix(m, { autoplay = true } = {}) {
     const peaks = await rp.json();
     await ws.load(m.audioUrl, peaks, m.durationSec);
   } catch {
-    await ws.load(m.audioUrl);
+    try {
+      await ws.load(m.audioUrl);
+    } catch {
+      npTime.textContent = "Gagal memuat audio. Cek koneksi lalu coba lagi.";
+      btnRetry.hidden = false;
+    }
   }
 
   setPlayState("paused");
+  isLoading = false;
   localStorage.setItem("room90_last", m.id);
   if (autoplay) {
     ws.play();
@@ -247,7 +280,7 @@ async function loadMix(m, { autoplay = true } = {}) {
 }
 
 btnPlay.addEventListener("click", async () => {
-  if (!ws) return;
+  if (!ws || isLoading) return;
   await ws.playPause();
 });
 
@@ -257,6 +290,27 @@ btnLike.addEventListener("click", () => {
   if (localStorage.getItem(k)) localStorage.removeItem(k);
   else localStorage.setItem(k, "1");
   refreshLikeUI();
+  btnLike.classList.remove("like-bounce");
+  void btnLike.offsetWidth;
+  btnLike.classList.add("like-bounce");
+});
+
+btnShare.addEventListener("click", async () => {
+  if (!current) return;
+  const url = `${location.origin}${location.pathname}#mix=${current.id}`;
+  history.replaceState(null, "", `#mix=${current.id}`);
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast("Link tape disalin");
+  } catch {
+    window.prompt("Salin link tape ini:", url);
+  }
+});
+
+window.addEventListener("hashchange", () => {
+  const id = new URLSearchParams(location.hash.replace(/^#/, "")).get("mix");
+  const m = mixes.find((x) => x.id === id);
+  if (m && m.id !== current?.id) loadMix(m);
 });
 
 btnRetry.addEventListener("click", () => {
@@ -276,11 +330,21 @@ btnNext.addEventListener("click", () => step(1));
 vol.addEventListener("input", () => {
   const v = parseFloat(vol.value);
   if (ws) ws.setVolume(v);
+  if (volOut) volOut.textContent = `${Math.round(v * 100)}%`;
   localStorage.setItem("room90_vol", String(v));
 });
 
 const savedVol = localStorage.getItem("room90_vol");
 if (savedVol !== null) vol.value = savedVol;
+if (volOut) volOut.textContent = `${Math.round(parseFloat(vol.value) * 100)}%`;
+
+// Klik waveform = seek ke posisi (selain drag bawaan Wavesurfer)
+waveBox.addEventListener("click", (e) => {
+  if (!ws) return;
+  const rect = waveBox.getBoundingClientRect();
+  const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+  ws.seekTo(ratio);
+});
 
 npImage.addEventListener("error", () => { npImage.hidden = true; });
 

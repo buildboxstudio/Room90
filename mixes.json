@@ -202,5 +202,22 @@
     "coverColor": "#ff4d00",
     "tracklist": [],
     "notes": ""
+  },
+  {
+    "id": "room90-13",
+    "imageUrl": "https://files.catbox.moe/4tctdh.jpg",
+    "likes": 0,
+    "title": "Sunday Sessions Vol. 11",
+    "artist": "Moxxsa",
+    "date": "2016-10-23",
+    "genre": "Future House",
+    "durationSec": 3293,
+    "durationText": "54:53",
+    "audioUrl": "https://files.catbox.moe/2t5dcl.mp3",
+    "peaksUrl": "peaks/sunday-sessions-11.json",
+    "bpm": null,
+    "coverColor": "#d4ff32",
+    "tracklist": [],
+    "notes": ""
   }
 ]

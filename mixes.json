@@ -151,5 +151,22 @@
     "coverColor": "#d4ff32",
     "tracklist": [],
     "notes": ""
+  },
+  {
+    "id": "room90-10",
+    "imageUrl": "https://files.catbox.moe/33h3lo.jpg",
+    "likes": 0,
+    "title": "Sunday Sessions Vol. 7",
+    "artist": "Moxxsa",
+    "date": "2016-06-12",
+    "genre": "Deep House",
+    "durationSec": 3288,
+    "durationText": "54:48",
+    "audioUrl": "https://files.catbox.moe/3mn47b.mp3",
+    "peaksUrl": "peaks/sunday-sessions-07.json",
+    "bpm": null,
+    "coverColor": "#ff4d00",
+    "tracklist": [],
+    "notes": ""
   }
 ]

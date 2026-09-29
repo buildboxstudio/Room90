@@ -54,8 +54,11 @@
     </div>
   </section>
   <aside aria-label="Playlist Sunday Sessions" class="playlist-sidebar">
-    <h2 class="section-title">Sunday Sessions Mixes</h2>
-    <ol id="playlist-list" class="playlist-list"></ol>
+    <button id="btn-playlist" class="ghost playlist-toggle" type="button" aria-expanded="false" aria-controls="playlist-list">
+      Sunday Sessions Playlist
+      <span class="playlist-count" id="playlist-count"></span>
+    </button>
+    <ol id="playlist-list" class="playlist-list" hidden></ol>
   </aside>
 </main>
 

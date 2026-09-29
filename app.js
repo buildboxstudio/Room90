@@ -210,11 +210,14 @@ async function boot() {
 
 function renderPlaylist() {
   const pl = document.getElementById("playlist-list");
+  const btn = document.getElementById("btn-playlist");
+  const count = document.getElementById("playlist-count");
   if (!pl) return;
   pl.innerHTML = "";
   const sunday = mixes
     .filter((m) => /sunday session/i.test(m.title))
     .sort((a, b) => a.date.localeCompare(b.date));
+  if (count) count.textContent = `${sunday.length} mixes`;
   for (const m of sunday) {
     const li = document.createElement("li");
     const b = document.createElement("button");
@@ -239,6 +242,14 @@ function renderPlaylist() {
     b.addEventListener("click", () => loadMix(m));
     li.append(b);
     pl.append(li);
+  }
+  if (btn && !btn.dataset.bound) {
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", () => {
+      const open = pl.hidden;
+      pl.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+    });
   }
 }
 

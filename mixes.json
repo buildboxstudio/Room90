@@ -185,5 +185,22 @@
     "coverColor": "#d4ff32",
     "tracklist": [],
     "notes": ""
+  },
+  {
+    "id": "room90-12",
+    "imageUrl": "https://files.catbox.moe/sv16v1.jpg",
+    "likes": 0,
+    "title": "Sunday Sessions Vol. 10",
+    "artist": "Moxxsa",
+    "date": "2016-09-20",
+    "genre": "House",
+    "durationSec": 4095,
+    "durationText": "68:15",
+    "audioUrl": "https://files.catbox.moe/ebyh9z.mp3",
+    "peaksUrl": "peaks/sunday-sessions-10.json",
+    "bpm": null,
+    "coverColor": "#ff4d00",
+    "tracklist": [],
+    "notes": ""
   }
 ]

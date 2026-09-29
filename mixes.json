@@ -83,5 +83,22 @@
     "coverColor": "#d4ff32",
     "tracklist": [],
     "notes": ""
+  },
+  {
+    "id": "room90-06",
+    "imageUrl": "https://files.catbox.moe/vnmx07.jpg",
+    "likes": 0,
+    "title": "Sunday Session Vol. 03",
+    "artist": "Moxxsa",
+    "date": "2026-04-24",
+    "genre": "Mainstage",
+    "durationSec": 2685,
+    "durationText": "44:45",
+    "audioUrl": "https://files.catbox.moe/4iqpdz.mp3",
+    "peaksUrl": "peaks/sunday-session-03.json",
+    "bpm": null,
+    "coverColor": "#ff4d00",
+    "tracklist": [],
+    "notes": ""
   }
 ]

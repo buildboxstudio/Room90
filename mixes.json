@@ -134,5 +134,22 @@
     "coverColor": "#ff4d00",
     "tracklist": [],
     "notes": ""
+  },
+  {
+    "id": "room90-09",
+    "imageUrl": "https://files.catbox.moe/alltgr.jpg",
+    "likes": 0,
+    "title": "Sunday Sessions Vol. 06",
+    "artist": "Moxxsa",
+    "date": "2016-05-29",
+    "genre": "Tech House",
+    "durationSec": 3620,
+    "durationText": "60:20",
+    "audioUrl": "https://files.catbox.moe/du8sfm.mp3",
+    "peaksUrl": "peaks/sunday-sessions-06.json",
+    "bpm": null,
+    "coverColor": "#d4ff32",
+    "tracklist": [],
+    "notes": ""
   }
 ]

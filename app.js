@@ -147,6 +147,7 @@ async function boot() {
     heroStats.textContent = `${mixes.length} TAPES // TOTAL ${fmt(totalSec)}`;
   }
 
+  list.innerHTML = "";
   for (const m of mixes) {
     const li = document.createElement("li");
     const b = document.createElement("button");
@@ -197,6 +198,8 @@ async function boot() {
 
   for (const m of mixes) renderLikes(m.id);
 
+  renderPlaylist();
+
   const last = localStorage.getItem("room90_last");
   const hashId = new URLSearchParams(location.hash.replace(/^#/, "")).get("mix");
   const saved = mixes.find((m) => m.id === hashId)
@@ -205,12 +208,53 @@ async function boot() {
   await loadMix(saved, { autoplay: false });
 }
 
+function renderPlaylist() {
+  const pl = document.getElementById("playlist-list");
+  if (!pl) return;
+  pl.innerHTML = "";
+  const sunday = mixes
+    .filter((m) => /sunday session/i.test(m.title))
+    .sort((a, b) => a.date.localeCompare(b.date));
+  for (const m of sunday) {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "playlist-card";
+    b.dataset.mixId = m.id;
+    const thumb = document.createElement("img");
+    thumb.className = "playlist-thumb";
+    thumb.alt = m.title;
+    thumb.loading = "lazy";
+    thumb.src = m.imageUrl || "";
+    thumb.addEventListener("error", () => { thumb.hidden = true; });
+    const body = document.createElement("span");
+    const t = document.createElement("span");
+    t.className = "playlist-title";
+    t.textContent = m.title;
+    const meta = document.createElement("span");
+    meta.className = "playlist-meta";
+    meta.textContent = `${m.genre} · ${fmt(m.durationSec)}`;
+    body.append(t, meta);
+    b.append(thumb, body);
+    b.addEventListener("click", () => loadMix(m));
+    li.append(b);
+    pl.append(li);
+  }
+}
+
+function highlightActivePlaylist(id) {
+  document.querySelectorAll(".playlist-card").forEach((card) => {
+    card.classList.toggle("playlist-card--active", card.dataset.mixId === id);
+  });
+}
+
 async function loadMix(m, { autoplay = true } = {}) {
   if (isLoading) return;
   isLoading = true;
   current = m;
   player.hidden = false;
   highlightActiveCard(m.id);
+  highlightActivePlaylist(m.id);
   if (location.hash.replace(/^#mix=/, "") !== m.id) {
     history.replaceState(null, "", `#mix=${m.id}`);
   }
@@ -260,6 +304,8 @@ async function loadMix(m, { autoplay = true } = {}) {
   ws.on("pause", () => setPlayState("paused"));
   ws.on("timeupdate", (t) => {
     npTime.textContent = `${fmt(t)} / ${fmt(m.durationSec)}`;
+    const pct = m.durationSec > 0 ? Math.round((t / m.durationSec) * 100) : 0;
+    waveBox.setAttribute("aria-valuenow", pct);
   });
   ws.on("finish", () => { step(1); });
   ws.on("error", (e) => {

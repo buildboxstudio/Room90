@@ -97,6 +97,80 @@ body::after {
 
 main { padding: 1.25rem; max-width: 760px; }
 
+@media (min-width: 900px) {
+  main {
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 2rem;
+    align-items: start;
+  }
+}
+
+/* Playlist sidebar Sunday Sessions: kartu kompak */
+.playlist-sidebar { margin-top: 2rem; }
+
+@media (min-width: 900px) {
+  .playlist-sidebar { margin-top: 0; }
+}
+
+.playlist-list { list-style: none; margin: 0; padding: 0; }
+
+.playlist-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  text-align: left;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-left: 2px solid transparent;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  min-height: 44px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.playlist-card:hover {
+  background: #101010;
+  border-color: #2c2c26;
+}
+
+.playlist-card:focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: 2px;
+}
+
+.playlist-card--active {
+  background: #12120e;
+  border-color: rgba(255, 46, 151, 0.5);
+  border-left: 4px solid var(--magenta);
+  box-shadow: 0 0 14px rgba(255, 46, 151, 0.3);
+}
+
+.playlist-thumb {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+
+.playlist-title {
+  display: block;
+  font-weight: 700;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playlist-meta { display: block; color: var(--muted); font-size: 0.72rem; margin-top: 0.1rem; }
+
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -552,7 +626,8 @@ body.glitching .waveform {
 @media (max-width: 600px) {
   :root { --player-h: 135px; }
   .keyboard-hint { display: none; }
-  .vol { display: none; }
+  .vol span { display: none; }
+  .vol input { width: 90px; min-height: 44px; }
   .hero { padding: 2rem 1rem 1rem; }
   main { padding: 1rem; }
   /* Waveform lebih tinggi di mobile: tap target seek lebih akurat */

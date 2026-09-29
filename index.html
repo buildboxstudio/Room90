@@ -53,6 +53,10 @@
       <div class="skeleton-card"></div>
     </div>
   </section>
+  <aside aria-label="Playlist Sunday Sessions" class="playlist-sidebar">
+    <h2 class="section-title">Sunday Sessions Mixes</h2>
+    <ol id="playlist-list" class="playlist-list"></ol>
+  </aside>
 </main>
 
 <div id="changelog-modal" class="modal-overlay" hidden>
@@ -97,7 +101,7 @@
       <p class="np-sub"><span id="np-genre">-</span> · <span id="np-time">00:00 / 00:00</span></p>
     </div>
   </div>
-  <div id="waveform" class="waveform" role="slider" aria-label="Seek" tabindex="0"></div>
+  <div id="waveform" class="waveform" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"></div>
   <div class="controls">
     <button id="btn-prev" class="btn-ctrl" type="button" aria-label="Tape sebelumnya" title="Tape sebelumnya (Shift+P)">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M6 5v14h3V5H6zm3.5 7L20 19V5l-10.5 7z"/></svg>

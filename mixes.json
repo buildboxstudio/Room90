@@ -168,5 +168,22 @@
     "coverColor": "#ff4d00",
     "tracklist": [],
     "notes": ""
+  },
+  {
+    "id": "room90-11",
+    "imageUrl": "https://files.catbox.moe/swwt5g.jpg",
+    "likes": 0,
+    "title": "Sunday Sessions Vol. 08",
+    "artist": "Moxxsa",
+    "date": "2016-07-03",
+    "genre": "House",
+    "durationSec": 4203,
+    "durationText": "70:03",
+    "audioUrl": "https://files.catbox.moe/yppkfp.mp3",
+    "peaksUrl": "peaks/sunday-sessions-08.json",
+    "bpm": null,
+    "coverColor": "#d4ff32",
+    "tracklist": [],
+    "notes": ""
   }
 ]

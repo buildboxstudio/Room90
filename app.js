@@ -155,8 +155,6 @@ async function boot() {
     b.dataset.mixId = m.id;
     const isNew = m.date === newestDate;
     if (isNew) b.classList.add("tape-card--new");
-    const no = m.id.replace("room90-", "#");
-
     const thumb = document.createElement("img");
     thumb.className = "tape-thumb";
     thumb.alt = m.title;
@@ -174,7 +172,7 @@ async function boot() {
 
     const t = document.createElement("span");
     t.className = "tape-title";
-    t.textContent = `ROOM90 ${no} / ${m.title}`;
+    t.textContent = m.title;
 
     const meta = document.createElement("span");
     meta.className = "tape-meta";
@@ -216,7 +214,7 @@ async function loadMix(m, { autoplay = true } = {}) {
   if (location.hash.replace(/^#mix=/, "") !== m.id) {
     history.replaceState(null, "", `#mix=${m.id}`);
   }
-  npTitle.textContent = `ROOM90 ${m.id.replace("room90-", "#")} / ${m.title}`;
+  npTitle.textContent = m.title;
   npGenre.textContent = m.genre;
   npTime.textContent = `00:00 / ${fmt(m.durationSec)}`;
 

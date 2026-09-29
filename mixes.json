@@ -66,5 +66,22 @@
     "coverColor": "#ff4d00",
     "tracklist": [],
     "notes": ""
+  },
+  {
+    "id": "room90-05",
+    "imageUrl": "https://files.catbox.moe/u5l2ah.jpg",
+    "likes": 0,
+    "title": "Sunday Session Vol. 02",
+    "artist": "Moxxsa",
+    "date": "2016-04-17",
+    "genre": "Mainstage",
+    "durationSec": 2097,
+    "durationText": "34:57",
+    "audioUrl": "https://files.catbox.moe/7id0a5.mp3",
+    "peaksUrl": "peaks/sunday-session-02.json",
+    "bpm": null,
+    "coverColor": "#d4ff32",
+    "tracklist": [],
+    "notes": ""
   }
 ]

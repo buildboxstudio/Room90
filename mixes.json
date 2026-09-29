@@ -100,5 +100,22 @@
     "coverColor": "#ff4d00",
     "tracklist": [],
     "notes": ""
+  },
+  {
+    "id": "room90-07",
+    "imageUrl": "https://files.catbox.moe/d8dis4.jpg",
+    "likes": 0,
+    "title": "Sunday Session Vol. 04",
+    "artist": "Moxxsa",
+    "date": "2016-05-08",
+    "genre": "Deep House",
+    "durationSec": 2233,
+    "durationText": "37:13",
+    "audioUrl": "https://files.catbox.moe/nruugb.mp3",
+    "peaksUrl": "peaks/sunday-session-04.json",
+    "bpm": null,
+    "coverColor": "#d4ff32",
+    "tracklist": [],
+    "notes": ""
   }
 ]

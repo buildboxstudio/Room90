@@ -117,5 +117,22 @@
     "coverColor": "#d4ff32",
     "tracklist": [],
     "notes": ""
+  },
+  {
+    "id": "room90-08",
+    "imageUrl": "https://files.catbox.moe/i1j686.jpg",
+    "likes": 0,
+    "title": "Sunday Sessions Vol. 05",
+    "artist": "Moxxsa",
+    "date": "2016-05-22",
+    "genre": "Mainstage",
+    "durationSec": 2781,
+    "durationText": "46:21",
+    "audioUrl": "https://files.catbox.moe/vyjqhu.mp3",
+    "peaksUrl": "peaks/sunday-sessions-05.json",
+    "bpm": null,
+    "coverColor": "#ff4d00",
+    "tracklist": [],
+    "notes": ""
   }
 ]

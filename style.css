@@ -46,8 +46,14 @@ body::after {
 }
 
 .hero {
-  padding: 3rem 1.25rem 1.25rem;
   border-bottom: 2px solid var(--line);
+}
+
+/* Alasan: isi hero sejajar main di kolom 1200px center, garis border tetap full-bleed */
+.hero-inner {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 3rem 2rem 1.25rem;
 }
 
 .hero-kicker {
@@ -95,13 +101,13 @@ body::after {
 
 .ghost:hover { background: rgba(212, 255, 50, 0.12); }
 
-main { padding: 1.25rem; max-width: 760px; }
+main { padding: 1.25rem; max-width: 760px; margin-inline: auto; }
 
 @media (min-width: 900px) {
   main {
-    max-width: 1100px;
+    max-width: 1200px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-columns: minmax(0, 1fr) 340px;
     gap: 2rem;
     align-items: start;
   }
@@ -672,13 +678,12 @@ body.glitching .waveform {
   .keyboard-hint { display: none; }
   .vol span { display: none; }
   .vol input { width: 90px; min-height: 44px; }
-  .hero { padding: 2rem 1rem 1rem; }
+  .hero-inner { padding: 2rem 1rem 1rem; }
   main { padding: 1rem; }
   /* Waveform lebih tinggi di mobile: tap target seek lebih akurat */
   .waveform { min-height: 80px; }
 }
 
 @media (min-width: 600px) {
-  .hero { padding-left: 2rem; }
   main { padding: 2rem; }
 }

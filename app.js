@@ -198,8 +198,6 @@ async function boot() {
 
   for (const m of mixes) renderLikes(m.id);
 
-  renderPlaylist();
-
   const last = localStorage.getItem("room90_last");
   const hashId = new URLSearchParams(location.hash.replace(/^#/, "")).get("mix");
   const saved = mixes.find((m) => m.id === hashId)
@@ -208,9 +206,71 @@ async function boot() {
   await loadMix(saved, { autoplay: false });
 }
 
+function renderNowMini() {
+  const img = document.getElementById("now-mini-img");
+  const title = document.getElementById("now-mini-title");
+  const sub = document.getElementById("now-mini-sub");
+  if (!title) return;
+  if (!current) {
+    if (img) img.hidden = true;
+    title.textContent = "Belum ada tape";
+    if (sub) sub.textContent = "Pilih tape untuk mulai";
+    return;
+  }
+  if (img) {
+    if (current.imageUrl) {
+      img.src = current.imageUrl;
+      img.alt = current.title;
+      img.hidden = false;
+    } else {
+      img.hidden = true;
+    }
+  }
+  title.textContent = current.title;
+  if (sub) sub.textContent = `${current.genre} · ${fmt(current.durationSec)}`;
+}
+
+function renderNextUp() {
+  const el = document.getElementById("nextup-list");
+  if (!el) return;
+  el.innerHTML = "";
+  if (!current || mixes.length < 2) return;
+  const i = mixes.findIndex((m) => m.id === current.id);
+  const upNext = [];
+  for (let k = 1; k <= 4 && k < mixes.length; k++) {
+    upNext.push(mixes[(i + k) % mixes.length]);
+  }
+  for (const m of upNext) el.append(playlistItem(m));
+}
+
+function playlistItem(m) {
+  const li = document.createElement("li");
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "playlist-card";
+  b.dataset.mixId = m.id;
+  const thumb = document.createElement("img");
+  thumb.className = "playlist-thumb";
+  thumb.alt = m.title;
+  thumb.loading = "lazy";
+  thumb.src = m.imageUrl || "";
+  thumb.addEventListener("error", () => { thumb.hidden = true; });
+  const body = document.createElement("span");
+  const t = document.createElement("span");
+  t.className = "playlist-title";
+  t.textContent = m.title;
+  const meta = document.createElement("span");
+  meta.className = "playlist-meta";
+  meta.textContent = `${m.genre} · ${fmt(m.durationSec)}`;
+  body.append(t, meta);
+  b.append(thumb, body);
+  b.addEventListener("click", () => loadMix(m));
+  li.append(b);
+  return li;
+}
+
 function renderPlaylist() {
   const pl = document.getElementById("playlist-list");
-  const btn = document.getElementById("btn-playlist");
   const count = document.getElementById("playlist-count");
   if (!pl) return;
   pl.innerHTML = "";
@@ -218,39 +278,7 @@ function renderPlaylist() {
     .filter((m) => /sunday session/i.test(m.title))
     .sort((a, b) => a.date.localeCompare(b.date));
   if (count) count.textContent = `${sunday.length} mixes`;
-  for (const m of sunday) {
-    const li = document.createElement("li");
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "playlist-card";
-    b.dataset.mixId = m.id;
-    const thumb = document.createElement("img");
-    thumb.className = "playlist-thumb";
-    thumb.alt = m.title;
-    thumb.loading = "lazy";
-    thumb.src = m.imageUrl || "";
-    thumb.addEventListener("error", () => { thumb.hidden = true; });
-    const body = document.createElement("span");
-    const t = document.createElement("span");
-    t.className = "playlist-title";
-    t.textContent = m.title;
-    const meta = document.createElement("span");
-    meta.className = "playlist-meta";
-    meta.textContent = `${m.genre} · ${fmt(m.durationSec)}`;
-    body.append(t, meta);
-    b.append(thumb, body);
-    b.addEventListener("click", () => loadMix(m));
-    li.append(b);
-    pl.append(li);
-  }
-  if (btn && !btn.dataset.bound) {
-    btn.dataset.bound = "1";
-    btn.addEventListener("click", () => {
-      const open = pl.hidden;
-      pl.hidden = !open;
-      btn.setAttribute("aria-expanded", String(open));
-    });
-  }
+  for (const m of sunday) pl.append(playlistItem(m));
 }
 
 function highlightActivePlaylist(id) {
@@ -259,13 +287,22 @@ function highlightActivePlaylist(id) {
   });
 }
 
+function renderSidebar() {
+  renderNowMini();
+  renderNextUp();
+  renderPlaylist();
+  if (current) {
+    highlightActiveCard(current.id);
+    highlightActivePlaylist(current.id);
+  }
+}
+
 async function loadMix(m, { autoplay = true } = {}) {
   if (isLoading) return;
   isLoading = true;
   current = m;
   player.hidden = false;
-  highlightActiveCard(m.id);
-  highlightActivePlaylist(m.id);
+  renderSidebar();
   if (location.hash.replace(/^#mix=/, "") !== m.id) {
     history.replaceState(null, "", `#mix=${m.id}`);
   }
@@ -415,6 +452,13 @@ waveBox.addEventListener("click", (e) => {
 });
 
 npImage.addEventListener("error", () => { npImage.hidden = true; });
+
+const nowMini = document.getElementById("now-mini");
+if (nowMini) {
+  nowMini.addEventListener("click", () => {
+    player.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "end" });
+  });
+}
 
 // MediaSession Action Handlers
 if ("mediaSession" in navigator) {

@@ -53,12 +53,25 @@
       <div class="skeleton-card"></div>
     </div>
   </section>
-  <aside aria-label="Playlist Sunday Sessions" class="playlist-sidebar">
-    <button id="btn-playlist" class="ghost playlist-toggle" type="button" aria-expanded="false" aria-controls="playlist-list">
-      Sunday Sessions Playlist
-      <span class="playlist-count" id="playlist-count"></span>
-    </button>
-    <ol id="playlist-list" class="playlist-list" hidden></ol>
+  <aside aria-label="Sidebar" class="sidebar">
+    <section aria-label="Sedang diputar" class="side-block">
+      <h2 class="section-title">Now Playing</h2>
+      <div id="now-mini" class="now-mini">
+        <img id="now-mini-img" class="now-mini-img" alt="" hidden>
+        <div class="now-mini-body">
+          <p id="now-mini-title" class="now-mini-title">Belum ada tape</p>
+          <p id="now-mini-sub" class="now-mini-sub">Pilih tape untuk mulai</p>
+        </div>
+      </div>
+    </section>
+    <section aria-label="Berikutnya" class="side-block">
+      <h2 class="section-title">Next Up</h2>
+      <ol id="nextup-list" class="playlist-list"></ol>
+    </section>
+    <section aria-label="Playlist Sunday Sessions" class="side-block">
+      <h2 class="section-title">Sunday Sessions <span class="playlist-count" id="playlist-count"></span></h2>
+      <ol id="playlist-list" class="playlist-list"></ol>
+    </section>
   </aside>
 </main>
 

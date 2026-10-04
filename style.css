@@ -107,23 +107,55 @@ main { padding: 1.25rem; max-width: 760px; }
   }
 }
 
-/* Playlist sidebar Sunday Sessions: kartu kompak */
-.playlist-sidebar { margin-top: 2rem; }
+/* Sidebar: Now Playing, Next Up, Sunday Sessions selalu terlihat */
+.sidebar { margin-top: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
 
 @media (min-width: 900px) {
-  .playlist-sidebar { margin-top: 0; }
+  .sidebar {
+    margin-top: 0;
+    position: sticky;
+    top: 1rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
 }
 
-.playlist-list { list-style: none; margin: 1rem 0 0; padding: 0; }
+.side-block { min-width: 0; }
 
-.playlist-list[hidden] { display: none; }
-
-.playlist-toggle { width: 100%; justify-content: space-between; }
-
-.playlist-count {
-  color: var(--magenta);
-  font-size: 0.8rem;
+.now-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--magenta);
+  padding: 0.625rem;
+  background: #0c0c0a;
 }
+
+.now-mini-img {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+
+.now-mini-body { min-width: 0; }
+
+.now-mini-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.now-mini-sub { margin: 0.15rem 0 0; color: var(--muted); font-size: 0.75rem; }
+
+.playlist-list { list-style: none; margin: 0; padding: 0; }
+
+.playlist-count { color: var(--magenta); font-size: 0.8rem; }
 
 .playlist-card {
   width: 100%;
